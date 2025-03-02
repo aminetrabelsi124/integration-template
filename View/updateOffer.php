@@ -15,20 +15,10 @@ if (!$offer) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $updatedOffer = [
-        'id' => $id,
-        'title' => $_POST['title'],
-        'destination' => $_POST['destination'],
-        'departure_date' => $_POST['departure_date'],
-        'return_date' => $_POST['return_date'],
-        'price' => $_POST['price'],
-        'disponible' => isset($_POST['disponible']) ? 1 : 0,
-        'category' => $_POST['category']
-    ];
-    
-    $offerController->updateOffer($id, $updatedOffer);
-    header("Location: listOffers.php");
-    exit();
+    $departure_date = $_POST['departure_date'];
+    $return_date = $_POST['return_date'];
+
+    $offerController->updateOfferDates($id, $departure_date, $return_date);
 }
 ?>
 
@@ -36,16 +26,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Modifier une Offre</title>
+    <title>Modifier les Dates de l'Offre</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f4f4f4;
         }
         form {
-            max-width: 500px;
+            max-width: 400px;
             margin: auto;
-            background: #f9f9f9;
+            background: #ffffff;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -59,13 +50,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
         button {
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 15px;
+            font-size: 16px;
+            padding: 10px;
         }
         button:hover {
             background-color: #45a049;
@@ -74,29 +69,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 
-<h1 style="text-align: center;">Modifier l'Offre</h1>
+<h1 style="text-align: center;">Modifier les Dates</h1>
 
 <form method="POST">
-    <label>Title:</label>
-    <input type="text" name="title" value="<?= htmlspecialchars($offer['title'] ?? ''); ?>" required>
-
-    <label>Destination:</label>
-    <input type="text" name="destination" value="<?= htmlspecialchars($offer['destination'] ?? ''); ?>" required>
-
     <label>Date de départ:</label>
-    <input type="date" name="departure_date" value="<?= $offer['departure_date'] ?? ''; ?>" required>
+    <input type="date" name="departure_date" value="<?= $offer->getDepartureDate(); ?>" required>
 
     <label>Date de retour:</label>
-    <input type="date" name="return_date" value="<?= $offer['return_date'] ?? ''; ?>" required>
-
-    <label>Prix:</label>
-    <input type="number" name="price" step="0.01" value="<?= $offer['price'] ?? ''; ?>" required>
-
-    <label>Disponible:</label>
-    <input type="checkbox" name="disponible" <?= isset($offer['disponible']) && $offer['disponible'] ? 'checked' : ''; ?>>
-
-    <label>Catégorie:</label>
-    <input type="text" name="category" value="<?= htmlspecialchars($offer['category'] ?? ''); ?>" required>
+    <input type="date" name="return_date" value="<?= $offer->getReturnDate(); ?>" required>
 
     <button type="submit">Modifier</button>
 </form>

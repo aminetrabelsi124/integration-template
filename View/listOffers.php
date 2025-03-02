@@ -39,7 +39,6 @@ $offers = $offerController->listOffre();
 <h1>Liste des Offres de Voyages</h1>
 <div style="margin-bottom: 10px;">
     <a href="addOffre.php" class="btn-add">Ajouter une offre</a>
-    <a href="deleteOffer.php" class="btn-delete">Supprimer une offre</a>
 </div>
 <table>
     <tr>

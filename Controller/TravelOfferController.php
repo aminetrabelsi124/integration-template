@@ -27,52 +27,43 @@ class TravelOfferController {
         }
     }
     public function addOffre($offer) {
-        require_once '../Model/TravelOffer.php';
-        require_once '../Config.php';
+        $sql = "INSERT INTO offers (title, destination, departure_date, return_date, price, disponible, category) 
+                VALUES (:title, :destination, :departure_date, :return_date, :price, :disponible, :category)";
+        try {
+            $query = $this->db->prepare($sql);
+            $id = $offer->getId();
+            $title = $offer->getTitle();
+            $destination = $offer->getDestination();
+            $departure_date = $offer->getDepartureDate();
+            $return_date = $offer->getReturnDate();
+            $price = $offer->getPrice();
+            $disponible = $offer->isDisponible() ? 1 : 0;
+            $category = $offer->getCategory();
     
-        $db = Config::getConnexion();
-        if (is_array($offer)) {
-            $offer = new TravelOffer(
-                $offer['title'],
-                $offer['destination'],
-                $offer['departure_date'],
-                $offer['return_date'],
-                $offer['price'],
-                $offer['disponible'],
-                $offer['category']
-            );
-        }
-        $query = "INSERT INTO offers (title, destination, departure_date, return_date, price, disponible, category) 
-        VALUES (:title, :destination, :departure_date, :return_date, :price, :disponible, :category)";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':title', $offer->getTitle());
-        $stmt->bindParam(':destination', $offer->getDestination());
-        $stmt->bindParam(':departure_date', $offer->getDepartureDate());
-        $stmt->bindParam(':return_date', $offer->getReturnDate());
-        $stmt->bindParam(':price', $offer->getPrice());
-        $stmt->bindParam(':disponible', $offer->isDisponible());
-        $stmt->bindParam(':category', $offer->getCategory());
-        if ($stmt->execute()) {
-            header("Location: ../View/listOffers.php");
+            $query->execute([
+                'title' => $title,
+                'destination' => $destination,
+                'departure_date' => $departure_date,
+                'return_date' => $return_date,
+                'price' => $price,
+                'disponible' => $disponible,
+                'category' => $category
+            ]);
+    
+            header("Location: listOffers.php");
             exit();
-        } else {
-            echo "Erreur lors de l'ajout de l'offre.";
+        } catch (Exception $e) {
+            die('Erreur: ' . $e->getMessage());
         }
     }
-    public function updateOffer($id, $offer) {
-        $sql = "UPDATE offers SET title = :title, destination = :destination, departure_date = :departure_date, 
-                return_date = :return_date, price = :price, disponible = :disponible, category = :category WHERE id = :id";
+    public function updateOfferDates($id, $departure_date, $return_date) {
+        $sql = "UPDATE offers SET departure_date = :departure_date, return_date = :return_date WHERE id = :id";
         try {
             $query = $this->db->prepare($sql);
             $query->execute([
-                'id' => $offer->getId(),
-                'title' => $offer->getTitle(),
-                'destination' => $offer->getDestination(),
-                'departure_date' => $offer->getDepartureDate(),
-                'return_date' => $offer->getReturnDate(),
-                'price' => $offer->getPrice(),
-                'disponible' => $offer->isDisponible(),
-                'category' => $offer->getCategory()
+                'id' => $id,
+                'departure_date' => $departure_date,
+                'return_date' => $return_date
             ]);
             header("Location: listOffers.php");
             exit();

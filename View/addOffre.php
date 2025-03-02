@@ -29,7 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <label>Date de départ:</label> <input type="date" name="departure_date" required><br>
     <label>Date de retour:</label> <input type="date" name="return_date" required><br>
     <label>Prix:</label> <input type="number" name="price" step="0.01" required><br>
-    <label>Disponible:</label> <input type="checkbox" name="disponible"><br>
+    <label for="disponible">Disponible :</label>
+    <select name="disponible" required>
+        <option value="1">Oui</option>
+        <option value="0">Non</option>
+    </select>
     <label>Catégorie:</label> <input type="text" name="category" required><br>
     <button type="submit">Ajouter</button>
 </form>
